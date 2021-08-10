@@ -1,0 +1,154 @@
+[
+  {
+    "name": "room",
+    "description": "現在の部屋の設定",
+    "options": [
+      {
+        "type": "SUB_COMMAND",
+        "name": "userlimit",
+        "description": "人数制限の変更",
+        "options": [
+          {
+            "type": "STRING",
+            "name": "state",
+            "description": "状態",
+            "required": true,
+            "choices": [
+              {"name": "OPEN: 人数制限無し", "value": "OPEN"},
+              {"name": "CLOSE: ゲームに合わせる", "value": "CLOSE"},
+              {"name": "LOCK: 現在の人数", "value": "LOCK"}
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SUB_COMMAND",
+        "name": "bitrate",
+        "description": "ビットレートの変更",
+        "options": [
+          {
+            "type": "STRING",
+            "name": "state",
+            "description": "状態",
+            "required": true,
+            "choices": [
+              {"name": "HIGH: 最高", "value": "HIGH"},
+              {"name": "DEFAULT: 通常", "value": "DEFAULT"},
+              {"name": "LOW: 最低", "value": "LOW"}
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SUB_COMMAND",
+        "name": "type",
+        "description": "部屋タイプの変更",
+        "options": [
+          {
+            "type": "STRING",
+            "name": "type",
+            "description": "種類",
+            "required": true,
+            "choices": [
+              {"name": "OneRoom", "value": "OneRoom"},
+              {"name": "CustomRoom", "value": "CustomRoom"}
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SUB_COMMAND",
+        "name": "game",
+        "description": "ゲームの変更"
+      }
+    ]
+  },
+  {
+    "name": "call",
+    "description": "メンバー全員を1つのVCに集合させる"
+  },
+  {
+    "name": "team",
+    "description": "メンバーをチームに分ける",
+    "options": [
+      {
+        "type": "INTEGER",
+        "name": "number",
+        "description": "チーム数 (指定無しの場合自動)",
+        "required": false
+      }
+    ]
+  },
+  {
+    "name": "rand",
+    "description": "ランダム",
+    "options": [
+      {
+        "type": "SUB_COMMAND",
+        "name": "member",
+        "description": "部屋のメンバーから",
+        "options": [
+          {
+            "type": "INTEGER",
+            "name": "number",
+            "description": "選択数 (指定無しの場合1人)",
+            "required": false
+          }
+        ]
+      },
+      {
+        "type": "SUB_COMMAND",
+        "name": "map",
+        "description": "マップから"
+      }
+    ]
+  },
+  {
+    "name": "game",
+    "description": "ゲームの設定",
+    "options": [
+      {
+        "type": "SUB_COMMAND",
+        "name": "set",
+        "description": "ゲームの登録"
+      }
+    ]
+  },
+  {
+    "name": "toy",
+    "description": "おもちゃ",
+    "options": [
+      {
+        "type": "SUB_COMMAND",
+        "name": "minesweeper",
+        "description": "マインスイーパー",
+        "options": [
+          {
+            "type": "INTEGER",
+            "name": "number",
+            "description": "ボム数 (指定無しの場合自動)",
+            "required": false
+          }
+        ]
+      },
+      {
+        "type": "SUB_COMMAND",
+        "name": "othello",
+        "description": "オセロ",
+        "options": [
+          {
+            "type": "USER",
+            "name": "user",
+            "description": "対戦相手",
+            "required": true
+          }
+        ]
+      },
+      {
+        "type": "SUB_COMMAND",
+        "name": "pixelart",
+        "description": "ドット絵"
+      }
+    ]
+  }
+]

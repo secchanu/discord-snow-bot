@@ -25,7 +25,7 @@ class Game {
 
   async setId (interaction) {
     await interaction.deferReply({ephemeral: true});
-    const activities = interaction?.member?.presence.activities;
+    const activities = interaction?.member?.presence?.activities ?? [];
     const validActivities = activities.filter(activity => activity.applicationId);
     const content = "登録するゲームを選択してください";
     const acts = validActivities.slice(0, 25);

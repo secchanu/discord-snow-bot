@@ -148,7 +148,7 @@ export async function roomFunction (...args) {
 
         case "game": {
           await interaction.deferReply({ephemeral: false});
-          const activities = interaction?.member?.presence.activities;
+          const activities = interaction?.member?.presence?.activities ?? [];
           const validActivities = activities.filter(activity => activity.applicationId && games.has(activity.applicationId));
           const content = "ゲームを選択してください";
           const acts = validActivities.slice(0, 24);
@@ -216,7 +216,7 @@ export async function roomFunction (...args) {
         const isOver = division*game.userLimit < players.size;
         const number = isOver ? Math.ceil(players.size/division) : game.userLimit;
         let under = division*number - players.size;
-        const teams = new Array(division).fill(null).map((team, index) => {
+        const teams = new Array(division).fill(null).map((_, index) => {
           const handicap = Math.ceil(under / (division-index));
           under -= handicap;
           const num = number - handicap;

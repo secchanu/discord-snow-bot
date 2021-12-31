@@ -286,12 +286,11 @@ class Room {
    * @param {Number} [index=0]
    */
   async call (index=0) {
-    this.members.each(async member => {
+    return Promise.all(this.members.map(async member => {
       const voiceState = member.voice;
       if (!voiceState?.channel) return;
-      await this.moveMember(voiceState, index);
-    });
-    return Promise.resolve(true);
+      return this.moveMember(voiceState, index);
+    }));
   }
 
   changeGame (game) {

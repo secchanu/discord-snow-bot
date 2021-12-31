@@ -86,45 +86,80 @@ export async function roomFunction (...args) {
 
         case "userlimit": {
           await interaction.deferReply({ephemeral: false});
-          const value = interaction.options.getString("state");
-          const userLimit = value === "LOCK" ? room.members.size
-                          : value === "OPEN" ? 0
-                          : room?.game.userLimit ?? 0;
-          const options = {
-            userLimit: userLimit
-          };
+          const content = "人数制限を選択してください";
+          const options = [
+            {label: "人数制限なし", value: "0"},
+            {label: `現在の人数 (${room.members.size}人)`, value: `${room.members.size}`}
+          ];
+          if (room?.game?.userLimit && ![0, room.members.size].includes(room.game.userLimit)) {
+            options.push({label: `${room.game.name}の人数 (${room.game.userLimit ? `${room.game.userLimit}人` : "制限なし"})`, value: `${room.game.userLimit}`});
+          }
+          const customId = "userLimit";
+          const selectMenu = new Discord.MessageSelectMenu()
+                                        .setCustomId(customId)
+                                        .setPlaceholder("人数制限")
+                                        .addOptions(options);
+          const components = [new Discord.MessageActionRow().addComponents(selectMenu)];
+          const messageData = {content, components};
+          const botMessage = await interaction.followUp(messageData);
+          const filter = i => i.customId === customId;
+          const res = await botMessage.awaitMessageComponent({filter, time}).catch(() => {});
+          if (!res) return;
+          const userLimit = parseInt(res.values[0]);
+          components[0].components.forEach(c => c.setDisabled());
           const index = room.voiceChannelIds.indexOf(interaction.member.voice.channelId);
           if (index === -1) {
-            await interaction.followUp("VCが見つかりませんでした");
+            res.update({content: "VCが見つかりませんでした", components});
             return;
           }
-          room.editVC(options, index);
-          await interaction.followUp(`人数制限を${userLimit ? `${userLimit}人` : "無制限"}に変更しました`);
+          const option = {userLimit};
+          room.editVC(option, index);
+          res.update({content: `人数制限を${userLimit ? `${userLimit}人` : "無制限"}に変更しました`, components});
           break;
         }
 
         case "bitrate": {
           await interaction.deferReply({ephemeral: false});
-          const value = interaction.options.getString("state");
+          const content = "ビットレートを選択してください";
           const premiumTier = interaction.guild.premiumTier;
-          const bitrate = value === "DEFAULT" ? 64 * 1000
-                        : value === "LOW" ? 8 * 1000
-                        : premiumTierToBitrate(premiumTier);
-          const options = {
-            bitrate: bitrate
-          };
+          const bitrates = [premiumTierToBitrate(premiumTier)/1000, 64, 8]
+          const options = [
+            {label: `最高 (${bitrates[0]}kbps)`, value: `${bitrates[0]}`},
+            {label: `普通 (${bitrates[1]}kbps)`, value: `${bitrates[1]}`},
+            {label: `最低 (${bitrates[2]}kbps)`, value: `${bitrates[2]}`}
+          ];
+          const customId = "bitrate";
+          const selectMenu = new Discord.MessageSelectMenu()
+                                        .setCustomId(customId)
+                                        .setPlaceholder("ビットレート")
+                                        .addOptions(options);
+          const components = [new Discord.MessageActionRow().addComponents(selectMenu)];
+          const messageData = {content, components};
+          const botMessage = await interaction.followUp(messageData);
+          const filter = i => i.customId === customId;
+          const res = await botMessage.awaitMessageComponent({filter, time}).catch(() => {});
+          if (!res) return;
+          const bitrate = parseInt(res.values[0]) * 1000;
+          components[0].components.forEach(c => c.setDisabled());
           const index = room.voiceChannelIds.indexOf(interaction.member.voice.channelId);
           if (index === -1) {
-            await interaction.followUp("VCが見つかりませんでした");
+            res.update({content: "VCが見つかりませんでした", components});
             return;
           }
-          room.editVC(options, index);
-          await interaction.followUp(`ビットレートを${bitrate/1000}kbpsに変更しました`);
+          const option = {bitrate};
+          room.editVC(option, index);
+          res.update({content:`ビットレートを${bitrate/1000}kbpsに変更しました`, components});
           break;
         }
 
         case "type": {
           await interaction.deferReply({ephemeral: false});
+          const content = "部屋タイプをを選択してください";
+          const options = [
+            {label: "OneRoom", value: "OneRoom"},
+            {label: "CustomRoom", value: "CustomRoom"}
+          ];
+
           const value = interaction.options.getString("type");
           let newRoom;
           switch (value) {
@@ -198,8 +233,6 @@ export async function roomFunction (...args) {
 
     case "team": {
       await interaction.deferReply({ephemeral: false});
-      const key = interaction?.member?.voice?.channel?.parentId;
-      const room = rooms.get(key);
       if (room.type !== "CustomRoom") {
         const content = "現在の部屋はこのコマンドに対応していません\n`/room type CustomRoom` を使用してから試してください";
         await interaction.followUp(content);
@@ -210,7 +243,7 @@ export async function roomFunction (...args) {
       const botMessage = await interaction.followUp("準備中…");
       let needVC = 0;
       async function team (int) {
-        let players = room.members.filter(member => !member.user.bot);
+        let players = interaction.member.voice.channel.members.filter(member => !member.user.bot);
         const division = (value && value <= players.size) ? value : Math.max(2, Math.min(Math.ceil(players.size/game.userLimit), (game?.teamLimit || 2)));
         needVC = division - (room.voiceChannelIds.length-1);
         const isOver = division*game.userLimit < players.size;

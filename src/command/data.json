@@ -6,38 +6,12 @@
       {
         "type": "SUB_COMMAND",
         "name": "userlimit",
-        "description": "人数制限の変更",
-        "options": [
-          {
-            "type": "STRING",
-            "name": "state",
-            "description": "状態",
-            "required": true,
-            "choices": [
-              {"name": "OPEN: 人数制限無し", "value": "OPEN"},
-              {"name": "CLOSE: ゲームに合わせる", "value": "CLOSE"},
-              {"name": "LOCK: 現在の人数", "value": "LOCK"}
-            ]
-          }
-        ]
+        "description": "人数制限の変更"
       },
       {
         "type": "SUB_COMMAND",
         "name": "bitrate",
-        "description": "ビットレートの変更",
-        "options": [
-          {
-            "type": "STRING",
-            "name": "state",
-            "description": "状態",
-            "required": true,
-            "choices": [
-              {"name": "HIGH: 最高", "value": "HIGH"},
-              {"name": "DEFAULT: 通常", "value": "DEFAULT"},
-              {"name": "LOW: 最低", "value": "LOW"}
-            ]
-          }
-        ]
+        "description": "ビットレートの変更"
       },
       {
         "type": "SUB_COMMAND",

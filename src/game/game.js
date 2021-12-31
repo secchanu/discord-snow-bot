@@ -39,14 +39,15 @@ class Game {
         value: activity.applicationId
       }
     });
+    const customId = "applicationId";
     const selectMenu = new Discord.MessageSelectMenu()
-                                  .setCustomId("applicationId")
+                                  .setCustomId(customId)
                                   .setPlaceholder("ゲーム名")
                                   .addOptions(options);
     const components = [new Discord.MessageActionRow().addComponents(selectMenu)];
     const messageData = {content, components};
     this.#botMessage = await interaction.followUp(messageData);
-    const filter = i => i.customId === "applicationId";
+    const filter = i => i.customId === customId;
     const res = await this.#botMessage.awaitMessageComponent({filter, time}).catch(() => {});
     if (!res) return;
     const applicationId = res.values[0];
@@ -68,14 +69,15 @@ class Game {
         value: `${n}`
       }
     });
+    const customId = "applicationId";
     const selectMenu = new Discord.MessageSelectMenu()
-                                  .setCustomId("applicationId")
+                                  .setCustomId(customId)
                                   .setPlaceholder("プレイ人数")
                                   .addOptions(options);
     const components = [new Discord.MessageActionRow().addComponents(selectMenu)];
     const messageData = {content, components};
     await interaction.update(messageData);
-    const filter = i => i.customId === "applicationId";
+    const filter = i => i.customId === customId;
     const res = await this.#botMessage.awaitMessageComponent({filter, time}).catch(() => {});
     if (!res) return;
     const userLimit = parseInt(res.values[0]);

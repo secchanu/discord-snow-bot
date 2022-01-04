@@ -1,8 +1,24 @@
 [
   {
+    "name": "game",
+    "description": "ゲームの設定",
+    "options": [
+      {
+        "type": "SUB_COMMAND",
+        "name": "set",
+        "description": "ゲームの登録"
+      }
+    ]
+  },
+  {
     "name": "room",
     "description": "現在の部屋の設定",
     "options": [
+      {
+        "type": "SUB_COMMAND",
+        "name": "reset",
+        "description": "初期状態に戻す"
+      },
       {
         "type": "SUB_COMMAND",
         "name": "userlimit",
@@ -16,19 +32,7 @@
       {
         "type": "SUB_COMMAND",
         "name": "type",
-        "description": "部屋タイプの変更",
-        "options": [
-          {
-            "type": "STRING",
-            "name": "type",
-            "description": "種類",
-            "required": true,
-            "choices": [
-              {"name": "OneRoom", "value": "OneRoom"},
-              {"name": "CustomRoom", "value": "CustomRoom"}
-            ]
-          }
-        ]
+        "description": "部屋タイプの変更"
       },
       {
         "type": "SUB_COMMAND",
@@ -72,21 +76,14 @@
       },
       {
         "type": "SUB_COMMAND",
-        "name": "map",
-        "description": "マップから"
+        "name": "item",
+        "description": "ゲーム固有"
       }
     ]
   },
   {
-    "name": "game",
-    "description": "ゲームの設定",
-    "options": [
-      {
-        "type": "SUB_COMMAND",
-        "name": "set",
-        "description": "ゲームの登録"
-      }
-    ]
+    "name": "vote",
+    "description": "投票"
   },
   {
     "name": "toy",

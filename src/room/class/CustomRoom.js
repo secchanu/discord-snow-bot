@@ -1,70 +1,43 @@
 import Room from "./Room.js";
 
-import OneRoom from "./OneRoom.js";
-
 
 class CustomRoom extends Room {
 
   /**
    * @param {GuildChannelManager} guildChannelManager 
-   * @param {Object} game 
-   * @param {?Snowflake} parentId
+   * @param {Object} game
+   * @param {?Room} room
    */
-   constructor (guildChannelManager, game, parentId=undefined) {
-    super(guildChannelManager, parentId);
-    this.game = game;
+  constructor(guildChannelManager, game, room = undefined) {
+    super(guildChannelManager, room);
+    if (game) this.game = game;
   }
 
-  async create () {
+  async create() {
     const game = this.game;
     const name = game.name;
     const teamLimit = game?.teamLimit ?? 2;
-    await super.createParent(name);
-    await super.createTC("専用チャット");
-    await super.createVC("home");
-    for (let i = 0; i < teamLimit; i++) {
-      await super.createVC(`${name} ${i+1}`);
+    if (!this.parentId) await super.createParent(name);
+    await super.resetParent();
+    if (!this.textChannelIds.length) {
+      await super.createTC("専用チャット");
     }
-    return Promise.resolve(this);
-  }
-
-  join (userID) {
-    super.enableReadTC(userID);
-  }
-
-  async addVC (number=1) {
-    const game = this.game;
-    const name = game.name;
-    const exist = this.voiceChannelIds.length;
-    for (let i = exist; i < (exist + number); i++) {
-      await super.createVC(`${name} ${i}`);
+    if (!this.voiceChannelIds.length) {
+      await super.createVC("home");
+    } else {
+      this.editVC({name: "home"});
     }
-  }
-
-  removeVC (number=1) {
-    const exist = this.voiceChannelIds.length;
-    for (let i = exist-1; i > (exist - number)-1; i--) {
-      super.deleteVC(i);
+    if (this.voiceChannelIds.length > 1) {
+      for (let i = 1; i < this.voiceChannelIds.length; i++) {
+        this.editVC({name: `${name} ${i}`});
+      }
     }
-  }
-
-  async toCustomRoom () {
-    return Promise.resolve(false);
-  }
-
-  async toOneRoom () {
-    await this.call();
-    const game = this.game;
-    const name = game.name;
-    const newRoom = new OneRoom(this.guildChannelManager, game, this.parentId);
-    newRoom.textChannelId = this.textChannelIds[0];
-    newRoom.voiceChannelId = this.voiceChannelIds[0];
-    newRoom.editVC({name: name}, 0);
-    const exist = this.voiceChannelIds.length;
-    for (let i = exist-1; i > 0; i--) {
-      this.deleteVC(i);
+    if (this.voiceChannelIds.length < (1 + teamLimit)) {
+      await super.addVC(name, (1 + teamLimit) - this.voiceChannelIds.length);
+    } else if (this.voiceChannelIds.length > (1 + teamLimit)) {
+      await super.removeVC(this.voiceChannelIds.length - (1 + teamLimit));
     }
-    return Promise.resolve(newRoom);
+    return this;
   }
 
 }

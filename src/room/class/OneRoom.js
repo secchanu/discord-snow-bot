@@ -4,9 +4,9 @@ import Room from "./Room.js";
 class OneRoom extends Room {
 
   /**
-   * @param {GuildChannelManager} guildChannelManager 
+   * @param {import("discord.js").GuildChannelManager} guildChannelManager 
    * @param {Object} game
-   * @param {?Room} room
+   * @param {Room} [room=undefined]
    */
   constructor(guildChannelManager, game, room = undefined) {
     super(guildChannelManager, room);

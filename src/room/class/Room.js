@@ -1,4 +1,3 @@
-import { Channel } from "discord.js";
 import { premiumTierToBitrate } from "../../util/util.js";
 
 
@@ -8,38 +7,40 @@ import { premiumTierToBitrate } from "../../util/util.js";
 class Room {
 
   /**
-   * @type {GuildChannelManager}
+   * @type {import("discord.js").GuildChannelManager}
    */
   #guildChannelManager;
 
   /**
-   * @type {Snowflake}
+   * @type {import("discord.js").Snowflake}
    */
   #parentId;
 
   /**
-   * @type {Array<Snowflake>}
+   * @type {Array<import("discord.js").Snowflake>}
    */
   #voiceChannelIds = [];
 
   /**
-   * @type {Array<Snowflake>}
+   * @type {Array<import("discord.js").Snowflake>}
    */
   #textChannelIds = [];
 
   /**
    * @type {Object}
    */
-  game;
+  #game;
 
   /**
-   * @type {boolean}
+   * @type {Boolean}
    */
   reserve;
 
   /**
-   * @param {GuildChannelManager} guildChannelManager 
-   * @param {?Room} room
+   * 
+   * @param {import("discord.js").GuildChannelManager} guildChannelManager 
+   * @param {Room} [room=undefined]
+   * @returns {Room}
    */
   constructor(guildChannelManager, room = undefined) {
     if (guildChannelManager) this.#guildChannelManager = guildChannelManager;
@@ -61,7 +62,7 @@ class Room {
   }
 
   /**
-   * @type {GuildChannelManager}
+   * @type {import("discord.js").GuildChannelManager}
    */
   get guildChannelManager() {
     return this.#guildChannelManager;
@@ -69,7 +70,7 @@ class Room {
 
   /**
    * このRoomのCCのID
-   * @type {Snowflake}
+   * @type {import("discord.js").Snowflake}
    */
   get parentId() {
     return this.#parentId;
@@ -77,7 +78,7 @@ class Room {
 
   /**
    * このRoomのVCのIDの配列
-   * @type {Array<Snowflake>}
+   * @type {Array<import("discord.js").Snowflake>}
    */
   get voiceChannelIds() {
     return this.#voiceChannelIds;
@@ -85,29 +86,58 @@ class Room {
 
   /**
    * このRoomのTCのIDの配列
-   * @type {Array<Snowflake>}
+   * @type {Array<import("discord.js").Snowflake>}
    */
   get textChannelIds() {
     return this.#textChannelIds;
   }
 
   /**
-   * @param {Snowflake} voiceChannelId
+   * @param {import("discord.js").Snowflake} voiceChannelId
    */
   set voiceChannelId(voiceChannelId) {
     this.#voiceChannelIds.push(voiceChannelId);
   }
 
   /**
-   * @param {Snowflake} textChannelId
+   * @param {import("discord.js").Snowflake} textChannelId
    */
   set textChannelId(textChannelId) {
     this.#textChannelIds.push(textChannelId);
   }
 
   /**
+   * @type {Object}
+   */
+  get game() {
+    return this.#game;
+  }
+
+  /**
+   * @param {Object} game
+   */
+  set game(game) {
+    if (this.#parentId) {
+      const channels = this.#guildChannelManager.cache;
+      const parent = channels.get(this.#parentId);
+      const children = parent.children;
+      children.each(child => {
+        child.edit({
+          name: child.name.replace(this.#game.name, game.name),
+          userLimit: 0
+        });
+      });
+      parent.edit({
+        name: parent.name.replace(this.#game.name, game.name),
+        userLimit: 0
+      });
+    }
+    this.#game = game;
+  }
+
+  /**
    * このRoom内にいるメンバーのコレクション
-   * @type {Collection<Snowflake,GuildMember>}
+   * @type {?import("discord.js").Collection<import("discord.js").Snowflake,import("discord.js").GuildMember>}
    */
   get members() {
     const channels = this.#guildChannelManager.cache;
@@ -123,7 +153,7 @@ class Room {
 
   /**
    * このRoomが見えているメンバーのコレクション
-   * @type {Collection<Snowflake,GuildMember>}
+   * @type {?import("discord.js").Collection<import("discord.js").Snowflake,import("discord.js").GuildMember>}
    */
   get attendance() {
     const channels = this.#guildChannelManager.cache;
@@ -141,8 +171,8 @@ class Room {
    * 親になるカテゴリーチャンネルを作成する
    * 最初に呼ぶ
    * @param {String} name 
-   * @param {GuildChannelCreateOptions} options 
-   * @returns {Promise<CategoryChannel>}
+   * @param {import("discord.js").GuildChannelCreateOptions} [options={}]
+   * @returns {Promise<import("discord.js").CategoryChannel>}
    */
   async createParent(name, options = {}) {
     const channel = await this.#guildChannelManager.create(name, {
@@ -155,8 +185,8 @@ class Room {
   /**
    * ボイスチャンネルを作成する
    * @param {String} name 
-   * @param {GuildChannelCreateOptions} options 
-   * @returns {Promise<VoiceChannel>}
+   * @param {import("discord.js").GuildChannelCreateOptions} [options={}] 
+   * @returns {Promise<import("discord.js").VoiceChannel>}
    */
   async createVC(name, options = {}) {
     const premiumTier = this.#guildChannelManager.guild.premiumTier;
@@ -174,8 +204,8 @@ class Room {
   /**
    * テキストチャンネルを作成する
    * @param {String} name 
-   * @param {GuildChannelCreateOptions} options 
-   * @returns {Promise<TextChannel>}
+   * @param {import("discord.js").GuildChannelCreateOptions} [options={}]
+   * @returns {Promise<import("discord.js").TextChannel>}
    */
   async createTC(name, options = {}) {
     const everyone = this.#guildChannelManager.guild.roles.everyone;
@@ -193,26 +223,30 @@ class Room {
     return channel;
   }
 
+  /**
+   * 親であるカテゴリーチャンネルを揃えます
+   * @returns {Promise<void>}
+   */
   async resetParent() {
     const channels = this.#guildChannelManager.cache;
     if (this.#voiceChannelIds) {
       for (const id of this.#voiceChannelIds) {
         const channel = channels.get(id);
-        await channel.setParent(this.#parentId);
+        if (channel.parentId !== this.#parentId) await channel.setParent(this.#parentId);
       }
     }
     if (this.#textChannelIds)
     for (const id of this.#textChannelIds) {
       const channel = channels.get(id);
-      await channel.setParent(this.#parentId);
+      if (channel.parentId !== this.#parentId) await channel.setParent(this.#parentId);
     }
   }
 
   /**
    * 親であるカテゴリーチャンネルを編集する
    * その後子のチャンネルを全て同期する
-   * @param {ChannelData} options 
-   * @returns {?CategoryChannel}
+   * @param {import("discord.js").ChannelData} [options={}] 
+   * @returns {?Promise<import("discord.js").CategoryChannel>}
    */
   async editParent(options = {}) {
     if (!this.#parentId) return;
@@ -220,17 +254,17 @@ class Room {
     const parent = channels.get(this.#parentId);
     await parent.edit(options);
     const children = parent.children;
-    children.each(child => {
-      child.lockPermissions();
-    });
+    for (const child of children.values()) {
+      await child.lockPermissions();
+    }
     return parent;
   }
 
   /**
    * 指定したVCを編集する
-   * @param {ChannelData} options 
+   * @param {import("discord.js").ChannelData} [options={}] 
    * @param {Number} [index=0]
-   * @returns {?Promise<VoiceChannel>} 
+   * @returns {?Promise<import("discord.js").VoiceChannel>} 
    */
   async editVC(options = {}, index = 0) {
     if (!this.#voiceChannelIds?.[index]) return;
@@ -242,9 +276,9 @@ class Room {
 
   /**
    * 指定したTCを編集する
-   * @param {ChannelData} options 
+   * @param {import("discord.js").ChannelData} [options={}] 
    * @param {Number} [index=0] 
-   * @returns {?TextChannel}
+   * @returns {?Promise<import("discord.js").TextChannel>}
    */
   async editTC(options = {}, index = 0) {
     if (!this.#textChannelIds?.[index]) return;
@@ -254,6 +288,10 @@ class Room {
     return channel;
   }
 
+  /**
+   * 親であるカテゴリーチャンネルを削除する
+   * @returns {Promise<void>}
+   */
   async deleteParent() {
     if (!this.#parentId) return false;
     const channels = this.#guildChannelManager.cache;
@@ -266,7 +304,7 @@ class Room {
   /**
    * 指定したVCを削除する
    * @param {Number} [index=0] 
-   * @returns {?VoiceChannel}
+   * @returns {?Promise<import("discord.js").VoiceChannel>}
    */
   async deleteVC(index = 0) {
     if (!this.#voiceChannelIds?.[index]) return;
@@ -280,7 +318,7 @@ class Room {
   /**
    * 指定したTCを削除する
    * @param {Number} [index=0] 
-   * @returns {?VoiceChannel}
+   * @returns {?Promise<import("discord.js").VoiceChannel>}
    */
   async deleteTC(index = 0) {
     if (!this.#textChannelIds?.[index]) return false;
@@ -291,6 +329,12 @@ class Room {
     return channel;
   }
 
+  /**
+   * 指定した数だけVCを増やす
+   * @param {String} name 
+   * @param {Number} [number=1] 
+   * @returns {Promise<void>}
+   */
   async addVC(name, number = 1) {
     const exist = this.#voiceChannelIds.length;
     for (let i = exist; i < (exist + number); i++) {
@@ -300,7 +344,8 @@ class Room {
 
   /**
    * 指定した数だけVCを減らす
-   * @param {?Number} number 
+   * @param {Number} [number=1] 
+   * @returns {Promise<void>}
    */
   async removeVC(number = 1) {
     const exist = this.#voiceChannelIds.length;
@@ -311,7 +356,8 @@ class Room {
 
   /**
    * 指定した数だけTCを減らす
-   * @param {?Number} number 
+   * @param {Number} [number=1]
+   * @returns {Promise<void>}
    */
   async removeTC(number = 1) {
     const exist = this.#textChannelIds.length;
@@ -322,7 +368,7 @@ class Room {
 
   /**
    * Room内にいるかどうか
-   * @param {VoiceState} voiceState 
+   * @param {import("discord.js").VoiceState} voiceState 
    * @returns {Boolean}
    */
   inVC(voiceState) {
@@ -331,7 +377,7 @@ class Room {
 
   /**
    * 指定したTCをユーザーが読めるようにする
-   * @param {Snowflake} userId 
+   * @param {import("discord.js").Snowflake} userId 
    * @param {Number} [index=0] 
    * @returns {Promise<Boolean>}
    */
@@ -349,7 +395,7 @@ class Room {
 
   /**
    * 上書きした権限を削除する
-   * @param {Snowflake} userId 
+   * @param {import("discord.js").Snowflake} userId 
    * @param {Number} [index=0] 
    * @returns {Promise<Boolean>}
    */
@@ -364,25 +410,31 @@ class Room {
   }
 
   /**
-   * @returns {void}
+   * @returns {Promise<void>}
    */
   async syncReadTC() {
-    if (this.attendance) {
-      for (const member of this.attendance.values()) {
-        await this.deleteOverwriteTC(member.id);
+    const members = this.members;
+    const attendance = this.attendance;
+    const both = (members && attendance) && members.intersect(attendance);
+    const add = both ? members.difference(both) : members;
+    const remove = both ? attendance.difference(both) : attendance;
+    if (add) {
+      for (const member of add.values()) {
+        await this.enableReadTC(member.id);
       }
     }
-    if (this.members) {
-      for (const member of this.members.values()) {
-        await this.enableReadTC(member.id);
+    if (remove) {
+      for (const member of remove.values()) {
+        await this.deleteOverwriteTC(member.id);
       }
     }
   }
 
   /**
    * メンバーを指定したVCに移動させる
-   * @param {VoiceState} voiceState 
+   * @param {import("discord.js").VoiceState} voiceState 
    * @param {Number} [index=0] 
+   * @returns {?Promise<import("discord.js").GuildMember>}
    */
   async moveMember(voiceState, index = 0) {
     if (!voiceState?.channel || !this.#voiceChannelIds?.[index]) return;
@@ -392,6 +444,7 @@ class Room {
   /**
    * メンバーを1つのVCに集合させる
    * @param {Number} [index=0]
+   * @returns {Promise<void>}
    */
   async call(index = 0) {
     for (const member of this.members.values()) {
@@ -399,23 +452,6 @@ class Room {
       if (!voiceState?.channel) return;
       await this.moveMember(voiceState, index);
     }
-  }
-
-  changeGame(game) {
-    const channels = this.#guildChannelManager.cache;
-    const parent = channels.get(this.#parentId);
-    const children = parent.children;
-    children.each(child => {
-      child.edit({
-        name: child.name.replace(this.game.name, game.name),
-        userLimit: 0
-      });
-    });
-    parent.edit({
-      name: parent.name.replace(this.game.name, game.name),
-      userLimit: 0
-    });
-    this.game = game;
   }
 
   /**

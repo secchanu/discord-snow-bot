@@ -120,7 +120,9 @@ class Game {
 
 }
 
-
+/**
+ * "interactionCreate"
+ */
 export async function game(...args) {
   const interaction = args[0];
   if (!interaction.isCommand() || !interaction.inGuild()) return;

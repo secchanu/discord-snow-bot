@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
     'Access-Control-Allow-Headers',
     'Content-Type, Authorization, access_token'
   );
-  res.json(JSON.stringify([...games], null, '  '));
+  res.json(JSON.stringify([...games], null, " "));
 });
 
 app.post("/", (req, res) => {

@@ -10,9 +10,8 @@ class StageRoom extends Room {
   #topic;
 
   /**
- * @param {GuildChannelManager} guildChannelManager 
- * @param {string} topic
- * @param {?Snowflake} parentId
+ * @param {import("discord.js").GuildChannelManager} guildChannelManager 
+ * @param {import("discord.js").StageInstance} stageInstance
  */
   constructor(guildChannelManager, stageInstance) {
     const channels = guildChannelManager.cache;

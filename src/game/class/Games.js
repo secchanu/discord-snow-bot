@@ -9,7 +9,7 @@ class Games extends Collection {
    * 同期(書き込み)
    */
   sync() {
-    writeFileSync(path, JSON.stringify([...this], null, '  '), _ => { });
+    writeFileSync(path, JSON.stringify([...this], null, " "), _ => { });
   }
 
   /**

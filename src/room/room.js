@@ -12,9 +12,8 @@ export const rooms = new Map();
 
 
 /**
- * Room作成
- * @param  {...any} args 
- * @returns {void}
+ * "voiceStateUpdate"
+ * @description Room作成
  */
 export async function createRoom(...args) {
   const oldState = args[0];
@@ -42,9 +41,8 @@ export async function createRoom(...args) {
 }
 
 /**
- * Room削除
- * @param  {...any} args 
- * @returns {void}
+ * "voiceStateUpdate"
+ * @description Room削除
  */
 export function deleteRoom(...args) {
   const oldState = args[0];
@@ -59,9 +57,8 @@ export function deleteRoom(...args) {
 }
 
 /**
- * Room出席
- * @param  {...any} args 
- * @returns {void}
+ * "voiceStateUpdate"
+ * @description Room出席
  */
 export async function attendRoom(...args) {
   const oldState = args[0];

@@ -8,6 +8,9 @@ import { premiumTierToBitrate, sleep, time } from "../util/util.js";
 import OneRoom from "../room/class/OneRoom.js";
 import CustomRoom from "../room/class/CustomRoom.js";
 
+/**
+ * "interactionCreate"
+ */
 export default async function command(...args) {
   const interaction = args[0];
   if (!interaction.isCommand() || !interaction.inGuild()) return;
@@ -167,7 +170,7 @@ export default async function command(...args) {
           if (!res) return;
           const gameId = res.values[0] === "null" ? null : res.values[0];
           const game = games.get(gameId);
-          room.changeGame(game);
+          room.game = game;
           components[0].components.forEach(c => c.setDisabled());
           res.update({ content: `ゲームを${game.name}に変更しました`, components });
           break;

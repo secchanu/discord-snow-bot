@@ -3,9 +3,8 @@ import StageRoom from "./class/StageRoom.js";
 export const stages = new Map();
 
 /**
- * StageRoom作成
- * @param {...any} args 
- * @returns {void}
+ * "stageInstanceCreate"
+ * @description StageRoom作成
  */
 export async function createStage(...args) {
   const stageInstance = args[0];
@@ -17,9 +16,8 @@ export async function createStage(...args) {
 }
 
 /**
- * StageRoom削除
- * @param  {...any} args 
- * @returns {void}
+ * "stageInstanceDelete"
+ * @description StageRoom削除
  */
 export async function deleteStage(...args) {
   const stageInstance = args[0];
@@ -31,9 +29,8 @@ export async function deleteStage(...args) {
 }
 
 /**
- * StageRoom出席
- * @param  {...any} args 
- * @returns {void}
+ * "voiceStateUpdate"
+ * @description StageRoom出席
  */
 export async function attendStage(...args) {
   const oldState = args[0];

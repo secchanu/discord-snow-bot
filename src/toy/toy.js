@@ -6,6 +6,9 @@ import Discord from "discord.js";
 import { time } from "../util/util.js";
 
 
+/**
+ * "interactionCreate"
+ */
 export async function playToy (...args) {
   const interaction = args[0];
   if (!interaction.isCommand() || !interaction.inGuild()) return;

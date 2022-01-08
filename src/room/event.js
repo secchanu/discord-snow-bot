@@ -89,7 +89,9 @@ export async function completeEvent(...args) {
 export async function subscribeEvent(...args) {
   const guildScheduledEvent = args[0];
   const user = args[1];
-  const key = guildScheduledEvent.id;
+  const channels = guildScheduledEvent?.guild?.channels?.cache;
+  if (!channels) return;
+  const key = channels.get(guildScheduledEvent?.channelId)?.parentId;
   if (!rooms.has(key)) return;
   const room = rooms.get(key);
   room.join(user.id);
@@ -101,7 +103,9 @@ export async function subscribeEvent(...args) {
 export async function unsubscribeEvent(...args) {
   const guildScheduledEvent = args[0];
   const user = args[1];
-  const key = guildScheduledEvent.id;
+  const channels = guildScheduledEvent?.guild?.channels?.cache;
+  if (!channels) return;
+  const key = channels.get(guildScheduledEvent?.channelId)?.parentId;
   if (!rooms.has(key)) return;
   const room = rooms.get(key);
   room.leave(user.id);

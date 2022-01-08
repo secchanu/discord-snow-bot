@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snow Sttings</title>
+</head>
+
+<body>
+  <table id="form" , border=1>
+    <tr>
+      <th>id</th>
+      <th>name</th>
+      <th>userLimit</th>
+      <th>data</th>
+    </tr>
+  </table>
+  <button id="submit">送信</button>
+</body>
+<script>
+  const ip = "localhost";
+  const port = 1999;
+  const url = `http://${ip}:${port}`;
+
+
+  function httpGet() {
+    const oReq = new XMLHttpRequest();
+    oReq.addEventListener("load", loadMap);
+    oReq.open("GET", url);
+    oReq.send();
+  }
+  function loadMap() {
+    const data = JSON.parse(JSON.parse(this.responseText));
+    const games = new Map(data);
+    createForm(games);
+  }
+  httpGet(url);
+
+  class Game {
+    id;
+    name;
+    userLimit;
+    data = {};
+
+    toMap() {
+      const id = this.id.innerHTML || null;
+      const name = this.name.innerHTML;
+      const userLimit = parseInt(this.userLimit.value);
+      const data = Object.values(this.data).reduce((acc, row) => {
+        if (!row.children[0].value || !row.children[1].value) return acc;
+        acc[row.children[0].value] = row.children[1].value.split("\n");
+        return acc;
+      }, {});
+      return [
+        id,
+        { id, name, userLimit, data }
+      ];
+    }
+
+  }
+
+  function createForm(games) {
+    const form = document.getElementById("form");
+    for (const value of games.values()) {
+      const game = new Game();
+      const parent = document.createElement("tr");
+      
+      game.id = document.createElement("th");
+      game.id.innerHTML = value.id;
+      parent.appendChild(game.id);
+
+      game.name = document.createElement("th");
+      game.name.innerHTML = value.name;
+      parent.appendChild(game.name);
+
+      let temp;
+
+      temp = document.createElement("th");
+      game.userLimit = document.createElement("input");
+      game.userLimit.type = "number";
+      game.userLimit.value = value.userLimit;
+      temp.appendChild(game.userLimit);
+      parent.appendChild(temp);
+
+      const data = document.createElement("th");
+      if (Object.keys(value?.data ?? {}).length) {
+        for (const [randKey, randItem] of Object.entries(value.data)) {
+          const row = document.createElement("div");
+          const key = document.createElement("input");
+          key.value = randKey;
+          row.appendChild(key);
+          const item = document.createElement("textarea");
+          item.value = randItem.join("\n");
+          row.appendChild(item);
+          const del = document.createElement("button");
+          del.innerHTML = "削除";
+          row.appendChild(del);
+          game.data[randKey] = row;
+          del.addEventListener("click", () => {
+            row.remove();
+            delete game.data[randKey];
+          });
+          data.appendChild(row);
+        }
+      }
+      const row = document.createElement("div");
+      const key = document.createElement("input");
+      row.appendChild(key);
+      const add = document.createElement("button");
+      add.innerHTML = "追加";
+      row.appendChild(add);
+      function addAdd(row, key, add) {
+        if (!key.value) return;
+        const randKey = key.value;
+        const item = document.createElement("textarea");
+        row.appendChild(item);
+        const del = document.createElement("button");
+        del.innerHTML = "削除";
+        row.appendChild(del);
+        game.data[randKey] = row;
+        del.addEventListener("click", () => {
+          row.remove();
+          delete game.data[randKey];
+        });
+        const newRow = document.createElement("div");
+        const newKey = document.createElement("input");
+        newRow.appendChild(newKey);
+        const newAdd = document.createElement("button");
+        newAdd.innerHTML = "追加";
+        newRow.appendChild(newAdd);
+        add.parentNode.parentNode.appendChild(newRow);
+        newAdd.addEventListener("click", () => {
+          addAdd(newRow, newKey, newAdd);
+        });
+        add.remove();
+      }
+      add.addEventListener("click", () => {
+        addAdd(row, key, add);
+      });
+      data.appendChild(row);
+      parent.appendChild(data);
+
+      form.appendChild(parent);
+      gameData.push(game);
+    }
+  }
+
+
+  function httpPost(games) {
+      const oReq = new XMLHttpRequest();
+      oReq.open("POST", url);
+      oReq.setRequestHeader("Content-type", "application/json");
+      oReq.send(JSON.stringify(games, null, " "));
+    }
+  const gameData = [];
+  const submit = document.getElementById("submit");
+  submit.addEventListener("click", () => {
+    const games = gameData.map(d => d.toMap());
+    httpPost(games);
+  });
+</script>
+
+</html>

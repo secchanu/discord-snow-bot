@@ -190,8 +190,9 @@ export default async function command(...args) {
         await interaction.followUp(content);
         return;
       }
+      await interaction.followUp("集合させます");
       await room.call();
-      await interaction.followUp("集合させました");
+      await interaction.editReply("集合させました");
       const overVC = (room.voiceChannelIds.length - 1) - (room.game?.teamLimit || 2);
       if (overVC > 0) room.removeVC(overVC);
       break;

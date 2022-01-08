@@ -66,6 +66,6 @@ export async function attendRoom(...args) {
   if (!rooms.has(newState?.channel?.parentId) || oldState?.channel?.parentId === newState?.channel?.parentId) return;
   const key = newState.channel.parentId;
   const room = rooms.get(key);
-  if (room.reserve) return;
+  //if (room.reserve) return; //イベント無効
   room.join(newState.id);
 }

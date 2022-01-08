@@ -5,7 +5,6 @@
   "main": "snow.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node snow.js"
   },
   "keywords": [
@@ -15,7 +14,7 @@
   "author": "secchanu",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^13.5.0",
+    "discord.js": "^13.5.1",
     "express": "^4.17.2",
     "ini": "^2.0.0"
   }

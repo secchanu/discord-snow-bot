@@ -23,6 +23,8 @@ class OneRoom extends Room {
     }
     if (!this.voiceChannelIds.length) {
       await super.createVC(name);
+    } else {
+      this.editVC({name});
     }
     if (this.voiceChannelIds.length > 1) {
       super.removeVC(this.voiceChannelIds.length - 1)

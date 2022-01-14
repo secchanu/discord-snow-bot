@@ -49,7 +49,7 @@ class Room {
     this.#parentId = room?.parentId;
     this.#voiceChannelIds = room?.voiceChannelIds ?? [];
     this.#textChannelIds = room?.textChannelIds ?? [];
-    this.game = room?.game;
+    this.#game = room?.game;
   }
 
 

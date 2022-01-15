@@ -438,6 +438,7 @@ class Room {
    */
   async moveMember(voiceState, index = 0) {
     if (!voiceState?.channel || !this.#voiceChannelIds?.[index]) return;
+    if (voiceState.channelId === this.#voiceChannelIds[index]) return;
     return voiceState.setChannel(this.#voiceChannelIds[index]);
   }
 
@@ -449,7 +450,6 @@ class Room {
   async call(index = 0) {
     for (const member of this.members.values()) {
       const voiceState = member.voice;
-      if (!voiceState?.channel) return;
       await this.moveMember(voiceState, index);
     }
   }

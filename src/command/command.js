@@ -204,7 +204,7 @@ export default async function command(...args) {
       const room = rooms.get(key);
       await interaction.deferReply({ ephemeral: false });
       if (room.type !== "CustomRoom") {
-        const content = "現在の部屋はこのコマンドに対応していません\n`/room type CustomRoom` を使用してから試してください";
+        const content = "現在の部屋はこのコマンドに対応していません";
         await interaction.followUp(content);
         return;
       }

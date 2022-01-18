@@ -148,7 +148,7 @@ class Room {
     const members = vcs.flatMap(vc => {
       return vc.members;
     });
-    return members;
+    return members.filter(member => !member.user.bot);//TODO 動作確認
   }
 
   /**
@@ -164,7 +164,7 @@ class Room {
     const members = tcs.flatMap(tc => {
       return tc.members;
     });
-    return members;
+    return members.filter(member => !member.user.bot);//TODO 動作確認;
   }
 
   /**

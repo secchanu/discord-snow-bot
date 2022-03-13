@@ -18,7 +18,8 @@ const options = {
 		"GUILD_PRESENCES",
 		"GUILD_MESSAGES",
 		"GUILD_MESSAGE_REACTIONS",
-		"GUILD_SCHEDULED_EVENTS"
+		"GUILD_SCHEDULED_EVENTS",
+		"GUILD_EMOJIS_AND_STICKERS"
 	]
 };
 const client = new Client(options);

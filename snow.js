@@ -7,8 +7,8 @@ const options = {
 	presence: {
 		activities: [
 			{
-				name: config.activity.name,
-				type: config.activity.type
+				name: config?.activity?.name,
+				type: config?.activity?.type
 			}
 		]
 	},
@@ -58,4 +58,4 @@ client.on("interactionCreate", playToy);
 import "./src/server/server.js";
 
 
-client.login(config.bot.token);
+client.login(config?.bot?.token);

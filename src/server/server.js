@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { parse } from "ini";
 const config = parse(readFileSync("./config.ini", "utf-8"));
-const port = config.bot.port;
+const port = config?.bot?.port;
 
 import { games } from "../game/game.js";
 

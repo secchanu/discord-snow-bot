@@ -25,11 +25,13 @@ export async function createEvent(...args) {
   }
   let room;
   switch (guildScheduledEvent.channelId) {
-    case config.room.OneRoom: {
+    case config?.room?.OneRoom: {
+      if (!config?.room?.OneRoom) return;
       room = new OneRoom(guildChannelManager, game);
       break;
     }
-    case config.room.CustomRoom: {
+    case config?.room?.CustomRoom: {
+      if (!config?.room?.CustomRoom) return;
       room = new CustomRoom(guildChannelManager, game);
       break;
     }

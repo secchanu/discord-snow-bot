@@ -7,8 +7,8 @@ const options = {
 	presence: {
 		activities: [
 			{
-				name: "雪鯖",
-				type: "WATCHING"
+				name: config.activity.name,
+				type: config.activity.type
 			}
 		]
 	},

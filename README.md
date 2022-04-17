@@ -14,6 +14,8 @@
 
 ```bash
 git clone https://github.com/secchanu/discord-snow-bot.git
+cd discord-snow-bot
+npm i
 
 ```
 
@@ -38,11 +40,6 @@ type = {ステータスの「〇〇を☓☓中」の☓☓(上の一覧から�
 ```
 
 ※{}は不要
-
-```bash
-cd discord-snow-bot
-npm i
-```
 
 
 ## 動かし方
